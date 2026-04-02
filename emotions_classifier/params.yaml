@@ -1,0 +1,9 @@
+model:
+  bert: "answerdotai/ModernBERT-base"
+
+text: |
+ """
+ Привет, как дела!
+ """
+
+token: "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"
