@@ -1,3 +1,4 @@
+import pickle
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 from sklearn.ensemble import RandomForestClassifier
@@ -22,4 +23,7 @@ def train_model(df):
     accuracy = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
     cr = classification_report(y_test, y_pred)
+
+    with open('model.pkl', 'wb') as f:
+        pickle.dump(clf, f)
     return accuracy, f1, cr

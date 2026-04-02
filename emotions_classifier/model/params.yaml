@@ -1,5 +1,5 @@
 model:
-  bert: "answerdotai/ModernBERT-base"
+  bert: "DeepPavlov/rubert-base-cased"
 
 text: |
  """

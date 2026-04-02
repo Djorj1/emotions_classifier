@@ -38,25 +38,20 @@ df = pd.concat([df_toxic, df_friend]).reset_index(drop = True)
 # print(df.head(3))
 
 # inputs = tokenizer.encode(df['text'].tolist(), return_tensors='pt', padding = True, truncation = True, n_jobs = -1)
-inputs = [tokenizer.encode(df['text'].tolist()[i],
-                            return_tensors='pt',
-                              padding = True,
-                                truncation = True,
-                                  max_lenght = 512, n_jobs = -1) for i in range(3)]
+inputs = tokenizer(
+    df['text'].tolist(),
+    return_tensors='pt',
+    padding=True,
+    truncation=True,
+    max_length=1024
+)
 
 
 
 with torch.no_grad():
-    embeddings   = [model(inputs[i]) for i in range(3)]
+    outputs = model(**inputs)
 
-print()
-print(embeddings[0])
-print()
-
-print()
-print(embeddings)
-print()
-
+embeddings = outputs.last_hidden_state[:, 0, :]
 
 embedding_columns = [f'feature_{i}' for i in range(len(embeddings[0]))]
 df_embeddings = pd.DataFrame(embeddings, columns=embedding_columns)
@@ -74,3 +69,4 @@ print(f"Accuracy: {acc}")
 print(f"F1-score: {f1}")
 print("\nClassification Report:")
 print(crr)
+
