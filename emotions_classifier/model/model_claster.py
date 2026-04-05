@@ -15,10 +15,11 @@ import pandas as pd
 from transformers import AutoTokenizer, AutoModel
 from datasets import load_dataset
 from sklearn.utils import resample
-from emotions_classifier.learning_model import train_model
+from emotions_classifier.model.learning_model import train_model
+# from emotions_classifier.model.learning_model_with_optuna import optimize_hyperparameters, train_best_model
+from emotions_classifier.model.learning_model_with_rfe_and_optuna import optimize_hyperparameters, train_best_model
 
-
-with open("emotions_classifier/params.yaml", "r") as f:
+with open("C:/Users/Георгий/Desktop/budcemp/emotions_classifier/emotions_classifier/model/params.yaml", "r") as f:
     params = yaml.safe_load(f)
 model_name = params['model']['bert']
 
@@ -35,7 +36,7 @@ model.eval()
 df_toxic = df.loc[df["target"] == 1 ][:500]
 df_friend = df.loc[df["target"] == 0 ][:500]
 df = pd.concat([df_toxic, df_friend]).reset_index(drop = True)
-# print(df.head(3))
+
 
 # inputs = tokenizer.encode(df['text'].tolist(), return_tensors='pt', padding = True, truncation = True, n_jobs = -1)
 inputs = tokenizer(
@@ -63,10 +64,24 @@ df_embeddings['target'] = df['target'].values
 print("\nПервые 5 строк датафрейма с эмбеддингами:")
 print(df_embeddings.head())
 
-acc, f1, crr = train_model(df_embeddings)
+# acc, f1, crr = train_model(df_embeddings)
+# print(f"Accuracy: {acc}")
+# print(f"F1-score: {f1}")
+# print("\nClassification Report:")
+# print(crr)
 
-print(f"Accuracy: {acc}")
-print(f"F1-score: {f1}")
+# result = optimize_hyperparameters(df_embeddings, n_trials = 100)
+# print(result['best_params'])
+# best_model_result = train_best_model(df_embeddings, result['best_params'])
+# print(f"Accuracy: {best_model_result['accuracy']}")
+# print(f"F1-score: {best_model_result['f1_score']}")
+# print("\nClassification Report:")
+# print(best_model_result['classification_report'])
+
+result = optimize_hyperparameters(df_embeddings, n_trials = 100)
+print(result['best_params'])
+best_model_result = train_best_model(df_embeddings, result['best_params'])
+print(f"Accuracy: {best_model_result['accuracy']}")
+print(f"F1-score: {best_model_result['f1_score']}")
 print("\nClassification Report:")
-print(crr)
-
+print(best_model_result['classification_report'])

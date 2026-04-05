@@ -16,7 +16,7 @@ def train_model(df):
 
 
 
-    clf = RandomForestClassifier()
+    clf = RandomForestClassifier(n_estimators = 178, max_depth = 16, min_samples_split = 3, min_samples_leaf = 7)
     clf.fit(X_train, y_train)
     y_pred = clf.predict(X_test)
 
@@ -24,6 +24,6 @@ def train_model(df):
     f1 = f1_score(y_test, y_pred)
     cr = classification_report(y_test, y_pred)
 
-    with open('model.pkl', 'wb') as f:
+    with open('model_big.pkl', 'wb') as f:
         pickle.dump(clf, f)
     return accuracy, f1, cr

@@ -6,8 +6,12 @@ import pandas as pd
 from transformers import AutoTokenizer, AutoModel
 
 def tokenizer(df):
-    with open('emotions_classifier\model\params.yaml') as f:
+    with open('model\params.yaml') as f:
         params = yaml.safe_load(f)
+
+    print()
+    print(params['token'])
+    print()
 
     tokenizer = AutoTokenizer.from_pretrained(params['model']['bert'], token = params['token'])
     model = AutoModel.from_pretrained(params['model']['bert'], token = params['token'])
