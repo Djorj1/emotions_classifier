@@ -2,6 +2,7 @@ import numpy as np
 from tqdm import tqdm
 import torch
 from sentence_transformers import SentenceTransformer
+from RAG_model.save_embedings import load_embeddings, save_embeddings
 
 
 _embedder_model = None
@@ -22,8 +23,17 @@ def get_embedder():
     return _embedder_model
 
 
-def get_embeddings(chunks: list, batch_size: int = 64):
+def get_embeddings(chunks: list, batch_size: int = 64, use_cache: bool = True, cache_dir: str = "embeddings_cache"):
     """Превращает чанки в вектора"""
+    if use_cache:
+        try:  
+            embeddings, cached_chunks = load_embeddings(cache_dir)
+            if embeddings is not None and len(cached_chunks) == len(chunks):
+                return embeddings, get_embedder()
+        except Exception:  
+                pass 
+        
+
     embedder = get_embedder()
     texts = [chunk["text"] for chunk in chunks]
     
@@ -40,4 +50,9 @@ def get_embeddings(chunks: list, batch_size: int = 64):
         batch_size=batch_size
     )
     
+    if use_cache: 
+        try:
+            save_embeddings(embeddings, chunks, cache_dir)
+        except Exception:
+            pass
     return np.array(embeddings), embedder
