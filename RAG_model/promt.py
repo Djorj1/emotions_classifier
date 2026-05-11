@@ -1,4 +1,3 @@
-# generator.py
 import ollama
 
 def generate_answer(query: str, retrieved_chunks: list, model: str = "llama3.2"):
