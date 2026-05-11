@@ -28,7 +28,7 @@ def get_embeddings(chunks: list, batch_size: int = 64):
     texts = [chunk["text"] for chunk in chunks]
     
 
-    if torch.cuda.is_available():  # ✅ НОВАЯ СТРОКА - проверка GPU
+    if torch.cuda.is_available():  
         batch_size = 128
 
 

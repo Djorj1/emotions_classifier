@@ -17,13 +17,13 @@ class VectorStore:
         print("🗄️ Создаём FAISS индекс...")
         dimension = embeddings.shape[1]
         
-        # IndexFlatIP + нормализованные вектора = cosine similarity
+        
         self.index = faiss.IndexFlatIP(dimension)
         self.index.add(embeddings.astype(np.float32))
         self.chunks = chunks
         
         self.save()
-        print(f"✅ Векторная база создана ({len(chunks)} чанков)")
+        print(f" Векторная база создана ({len(chunks)} чанков)")
         return self
 
     def save(self):
@@ -35,7 +35,7 @@ class VectorStore:
         with open(self.index_path / "chunks.pkl", "wb") as f:
             pickle.dump(self.chunks, f)
         
-        print(f"💾 Индекс сохранён в папку: {self.index_path}")
+        print(f" Индекс сохранён в папку: {self.index_path}")
 
     def load(self):
         """Загружает существующую векторную базу"""
@@ -43,7 +43,7 @@ class VectorStore:
             self.index = faiss.read_index(str(self.index_path / "faiss.index"))
             with open(self.index_path / "chunks.pkl", "rb") as f:
                 self.chunks = pickle.load(f)
-            print(f"✅ Векторная база загружена ({len(self.chunks)} чанков)")
+            print(f" Векторная база загружена ({len(self.chunks)} чанков)")
             return True
         except FileNotFoundError:
             return False
